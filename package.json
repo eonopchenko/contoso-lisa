@@ -1,14 +1,27 @@
 {
-    "name": "contoso-lisa",
-    "description": "Contoso bank chatbot",
-    "version": "0.0.1",
-    "private": true,
-    "license": "MIT",
-    "author": "eonopchenko",
-    "engines": {
-        "node": ">=6.9.1"
-    },
-    "scripts": {
-        "start": "node index.js"
-    }
+  "name": "contoso-lisa",
+  "description": "Contoso bank chatbot",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "author": "eonopchenko",
+  "engines": {
+    "node": ">=6.9.1"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eonopchenko/contoso-lisa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eonopchenko/contoso-lisa/issues"
+  },
+  "homepage": "https://github.com/eonopchenko/contoso-lisa#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "express-session": "^1.15.6"
+  }
 }
