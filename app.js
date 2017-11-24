@@ -7,12 +7,12 @@ app.set('view engine', 'ejs');
 
 app.use(express.static("views"));
 
-if (!cfenv.getAppEnv().isLocal) {
+// if (!cfenv.getAppEnv().isLocal) {
   app.use(helmet());
   app.use(helmet.noCache());
   app.enable("trust proxy");
   app.use(express_enforces_ssl());
-}
+// }
 
 app.use(session({
   secret: "123456",
