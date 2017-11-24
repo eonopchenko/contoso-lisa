@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/eonopchenko/contoso-lisa#readme",
   "dependencies": {
-    "cfenv": "^1.0.4",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "express-enforces-ssl": "^1.1.0",

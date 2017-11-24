@@ -1,6 +1,5 @@
 const express = require("express");
 const session = require("express-session");
-const cfenv = require("cfenv");
 const helmet = require("helmet");
 const express_enforces_ssl = require("express-enforces-ssl");
 const app = express();
@@ -9,12 +8,10 @@ app.set('view engine', 'ejs');
 
 app.use(express.static("views"));
 
-// if (!cfenv.getAppEnv().isLocal) {
-  app.use(helmet());
-  app.use(helmet.noCache());
-  app.enable("trust proxy");
-  app.use(express_enforces_ssl());
-// }
+app.use(helmet());
+app.use(helmet.noCache());
+app.enable("trust proxy");
+app.use(express_enforces_ssl());
 
 app.use(session({
   secret: "123456",
