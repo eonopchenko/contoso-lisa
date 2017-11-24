@@ -6,10 +6,18 @@ app.set('view engine', 'ejs');
 
 app.use(express.static("views"));
 
+if (!cfenv.getAppEnv().isLocal) {
+  app.use(helmet());
+  app.use(helmet.noCache());
+  app.enable("trust proxy");
+  app.use(express_enforces_ssl());
+}
+
 app.use(session({
   secret: "123456",
   resave: true,
   saveUninitialized: true,
+  proxy: true,
   cookie: {
     httpOnly: true,
     secure: false
@@ -20,7 +28,6 @@ app.use(session({
 app.get('/',function(req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
-
 
 ///--- REGISTERED LOGIN ---///
 app.get('/login',function(req, res) {

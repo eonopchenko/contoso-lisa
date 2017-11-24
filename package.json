@@ -23,6 +23,8 @@
   "dependencies": {
     "ejs": "^2.5.7",
     "express": "^4.16.2",
-    "express-session": "^1.15.6"
+    "express-enforces-ssl": "^1.1.0",
+    "express-session": "^1.15.6",
+    "helmet": "^3.9.0"
   }
 }
