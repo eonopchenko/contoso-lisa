@@ -1,0 +1,36 @@
+iframe {
+    width:100%;
+    height:100%;
+    background-color:white;
+}
+
+.hide {
+    display:none;
+}
+
+#chat {
+    position:fixed;
+    left:25px;
+    top:50px;
+    width:50%;
+    height:50%;
+}
+
+#id_chat_frame {
+    width:100%;
+    height:100%;
+}
+
+.chat_button {
+    z-index: 10;
+    width:100px;
+    position:absolute;
+    top:40px;
+    left:0px;
+}
+
+#chatframe button {
+    position:absolute;
+    right:2px;
+    top:2px;
+}

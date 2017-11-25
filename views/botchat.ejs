@@ -6,8 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <title>Botchat</title>
+    
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+      <!-- Custom CSS -->
+      <link href="resources/css/botchat.css" rel="stylesheet">
 </head>
 <body>
-    <h3>Hi, <%= username %>! This is botchat.</h3>
+    <h3>Hi, <%= username %>, my name is Lisa. How can I help you?</h3>
+
+    <div id="chat">
+        <img id="id_chat_button_open" class="chat_button" src="resources/img/lisa-icon.png" onclick="openChat()" style="display:none"/>
+        <img id="id_chat_button_close" class="chat_button" src="resources/img/lisa-icon-headset.png" onclick="closeChat()" style="display:block"/>
+        <div id="id_chat_frame" class="embed-responsive embed-responsive-21by9" style="display:block;">
+            <!-- <iframe class="embed-responsive-item" src="https://webchat.botframework.com/embed/msa-mybot?s=8TyT0RUpUpk.cwA.PEU.EIvvArwskN8k9X7P5EbPu4R3x5pFNUdlN_-kH1jmfbw"></iframe> -->
+            <iframe class="embed-responsive-item" src='https://webchat.botframework.com/embed/contoso-lisa-bot?s=4Zxn8PGzGlQ.cwA.rJk.t6C24LEhQELKIJFDrq_EK9972GzH9ZGtnvzM5XJrI-8'></iframe>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <script type="text/javascript">
+        function openChat() {
+            document.getElementById("id_chat_button_open").style.display="none";
+            document.getElementById("id_chat_button_close").style.display="block";
+            document.getElementById("id_chat_frame").style.display="block";
+        }
+
+        function closeChat() {
+            document.getElementById("id_chat_button_open").style.display="block";
+            document.getElementById("id_chat_button_close").style.display="none";
+            document.getElementById("id_chat_frame").style.display="none";
+        }
+    </script>
 </body>
 </html>
