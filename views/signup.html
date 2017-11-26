@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Contoso Lisa - Sign Up Page</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom Fonts -->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+  <!-- Custom CSS -->
+  <link href="resources/css/signup.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container">
+    
+        <!-- Form submit danger -->
+        <div id="submit-danger" style="display:none">
+            <div class="alert alert-danger">
+                <strong>Error!</strong> Submission error.
+            </div>
+        </div>
+
+        <form>
+            <div class="form-group row">
+                <label for="username-text-input" class="col-2 col-form-label">User Name</label>
+                <div class="col-10">
+                    <input class="form-control" type="text" value="eugene" id="username-text-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="firstname-text-input" class="col-2 col-form-label">First Name</label>
+                <div class="col-10">
+                    <input class="form-control" type="text" value="Evgenii" id="firstname-text-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="lastname-text-input" class="col-2 col-form-label">Last Name</label>
+                <div class="col-10">
+                    <input class="form-control" type="text" value="Onopchenko" id="lastname-text-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="email-input" class="col-2 col-form-label">Email</label>
+                <div class="col-10">
+                    <input class="form-control" type="email" value="jake.spb@gmail.com" id="email-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="tel-input" class="col-2 col-form-label">Telephone</label>
+                <div class="col-10">
+                    <input class="form-control" type="tel" value="+64 22 649 4457" placeholder="x-(xxx)-xxx-xxxx" id="tel-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password1-input" class="col-2 col-form-label">Password</label>
+                <div class="col-10">
+                    <input class="form-control" type="password" value="password" id="password1-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password2-input" class="col-2 col-form-label">Re-enter Password</label>
+                <div class="col-10">
+                    <input class="form-control" type="password" value="password" id="password2-input">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="birthdate-input" class="col-2 col-form-label">Date of Birth</label>
+                <div class="col-10">
+                    <input class="form-control" type="date" value="1987-05-18" id="birthdate-input">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="button-submit">Sign Up</button>
+        </form>
+    </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Scripts resources section -->
+  <script src="resources/js/signup.js"></script>
+  <script src="resources/js/md5.js"></script>
+
+</body>
+
+</html>

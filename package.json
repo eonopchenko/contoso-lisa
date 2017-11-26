@@ -25,6 +25,7 @@
     "express": "^4.16.2",
     "express-enforces-ssl": "^1.1.0",
     "express-session": "^1.15.6",
-    "helmet": "^3.9.0"
+    "helmet": "^3.9.0",
+    "request": "^2.83.0"
   }
 }
