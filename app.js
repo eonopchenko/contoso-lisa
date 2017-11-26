@@ -41,16 +41,14 @@ app.get('/login',function(req, res) {
     uri: 'http://contoso-lisa-mobile.azurewebsites.net/tables/CustomerTable',
     method: 'GET'
   }, function (error, response, body) {
+    var success = false;
     if(error != null) {
       console.log('error:', error);
       console.log('statusCode:', response && response.statusCode);
       console.log('body:', body);
     } else {
       var customers = JSON.parse(body);
-      var success = false;
       for(var index in customers) {
-        console.log(customers[index].username);
-        console.log(customers[index].password);
         if((customers[index].username == req.query.username) && (customers[index].password == req.query.password)) {
           req.session.username = req.query.username;
           res.contentType('application/json');
@@ -78,7 +76,8 @@ app.get('/submit',function(req, res) {
   '"lastname": "' + req.query.lastname + '",' + 
   '"email": "' + req.query.email + '",' + 
   '"tel": "' + req.query.tel + '",' + 
-  '"password": "' + req.query.password + '"}';
+  '"password": "' + req.query.password + '",' + 
+  '"balance" : "' + '0' + '"}';
 
   request({
     headers: {
@@ -89,11 +88,16 @@ app.get('/submit',function(req, res) {
     body: data,
     method: 'POST'
   }, function (error, response, body) {
-    console.log('error:', error); // Print the error if one occurred
-    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-    console.log('body:', body); // Print the HTML for the Google homepage.
-    res.contentType('application/json');
-    res.send("{\"submit\":\"success\"}");
+    if(error != null) {
+      console.log('error:', error);
+      console.log('statusCode:', response && response.statusCode);
+      console.log('body:', body);
+      res.contentType('application/json');
+      res.send("{\"submit\":\"error\"}");
+    } else {
+      res.contentType('application/json');
+      res.send("{\"submit\":\"success\"}");
+    }
   });
 });
 
