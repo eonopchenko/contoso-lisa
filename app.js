@@ -15,10 +15,10 @@ app.set('view engine', 'ejs');
 
 app.use(express.static("views"));
 
-app.use(helmet());
-app.use(helmet.noCache());
-app.enable("trust proxy");
-app.use(express_enforces_ssl());
+// app.use(helmet());
+// app.use(helmet.noCache());
+// app.enable("trust proxy");
+// app.use(express_enforces_ssl());
 
 app.use(session({
   secret: "123456",
@@ -39,79 +39,111 @@ app.get('/',function(req, res) {
 ///--- REGISTERED LOGIN ---///
 app.get('/login',function(req, res) {
 
-  request({
-    headers: {
-      'ZUMO-API-VERSION': '2.0.0',
-      'Content-Type': 'application/json'
-    },
-    uri: 'http://contoso-lisa-mobile.azurewebsites.net/tables/CustomerTable',
-    method: 'GET'
-  }, function (error, response, body) {
-    var success = false;
-    if (error) {
-      console.log('error:', error);
-      console.log('statusCode:', response && response.statusCode);
-      console.log('body:', body);
-    } else {
-      var customers = JSON.parse(body);
-      for (var index in customers) {
-        if ((customers[index].username == req.query.username) && (customers[index].password == req.query.password)) {
+  req.session.username = '';
+  req.session.password = '';
+  req.session.anonymous = req.query.anonymous;
 
-          req.session.username = req.query.username;
-          req.session.password = req.query.password;
+  var directLineClient = request_promise(directLineSpecUrl)
+  .then(function (spec) {
+    return new swagger_client({
+      spec: JSON.parse(spec.trim()),
+      usePromise: true
+    });
+  })
+  .then(function (client) {
+    client.clientAuthorizations.add('AuthorizationBotConnector', new swagger_client.ApiKeyAuthorization('Authorization', 'Bearer ' + directLineSecret, 'header'));
+    return client;
+  })
+  .catch(function (error) {
+    console.error('Error initializing DirectLine client', error);
+  });
 
-          var directLineClient = request_promise(directLineSpecUrl)
-          .then(function (spec) {
-            return new swagger_client({
-              spec: JSON.parse(spec.trim()),
-              usePromise: true
-            });
-          })
-          .then(function (client) {
-            client.clientAuthorizations.add('AuthorizationBotConnector', new swagger_client.ApiKeyAuthorization('Authorization', 'Bearer ' + directLineSecret, 'header'));
-            return client;
-          })
-          .catch(function (error) {
-            console.error('Error initializing DirectLine client', error);
+  if (req.query.anonymous === 'true') {
+    directLineClient.then(function (client) {
+      client.Conversations.Conversations_StartConversation()
+      .then(function (response) {
+        return response.obj.conversationId;
+      })
+      .then(function (conversationId) {
+          client.Conversations.Conversations_PostActivity({
+            conversationId: conversationId,
+            activity: {
+              textFormat: 'plain',
+              text: '{"username":"","password":""}',
+              type: 'message',
+              from: {
+                id: directLineClientName,
+                name: directLineClientName
+              }
+            }
+          }).catch(function (error) {
+            console.error('Error sending message:', error);
           });
-        
-          directLineClient.then(function (client) {
-            client.Conversations.Conversations_StartConversation()
-            .then(function (response) {
-              return response.obj.conversationId;
-            })
-            .then(function (conversationId) {
-                client.Conversations.Conversations_PostActivity({
-                  conversationId: conversationId,
-                  activity: {
-                    textFormat: 'plain',
-                    text: '{"username":"' + req.session.username + '","password":"' + req.session.password + '"}',
-                    type: 'message',
-                    from: {
-                      id: directLineClientName,
-                      name: directLineClientName
-                    }
-                  }
-                }).catch(function (error) {
-                  console.error('Error sending message:', error);
-                });
-            });
-          });        
+      });
+    });        
 
-          res.contentType('application/json');
-          res.send("{\"login\":\"success\"}");
-          success = true;
-          break;
+    res.contentType('application/json');
+    res.send("{\"login\":\"success\"}");
+  } else {
+    request({
+      headers: {
+        'ZUMO-API-VERSION': '2.0.0',
+        'Content-Type': 'application/json'
+      },
+      uri: 'http://contoso-lisa-mobile.azurewebsites.net/tables/CustomerTable',
+      method: 'GET'
+    }, function (error, response, body) {
+      var success = false;
+      if (error) {
+        console.log('error:', error);
+        console.log('statusCode:', response && response.statusCode);
+        console.log('body:', body);
+      } else {
+        var customers = JSON.parse(body);
+        for (var index in customers) {
+          if ((customers[index].username == req.query.username) && (customers[index].password == req.query.password)) {
+
+            req.session.username = req.query.username;
+            req.session.password = req.query.password;
+
+            directLineClient.then(function (client) {
+              client.Conversations.Conversations_StartConversation()
+              .then(function (response) {
+                return response.obj.conversationId;
+              })
+              .then(function (conversationId) {
+                  client.Conversations.Conversations_PostActivity({
+                    conversationId: conversationId,
+                    activity: {
+                      textFormat: 'plain',
+                      text: '{"username":"' + req.session.username + '","password":"' + req.session.password + '"}',
+                      type: 'message',
+                      from: {
+                        id: directLineClientName,
+                        name: directLineClientName
+                      }
+                    }
+                  }).catch(function (error) {
+                    console.error('Error sending message:', error);
+                  });
+              });
+            });        
+
+            res.contentType('application/json');
+            res.send("{\"login\":\"success\"}");
+            success = true;
+            break;
+          }
         }
       }
-    }
-    
-    if (!success) {
-      req.session.username = "";
-      res.contentType('application/json');
-      res.send("{\"login\":\"error\"}");
-    }
-  });
+      
+      if (!success) {
+        req.session.username = "";
+        res.contentType('application/json');
+        res.send("{\"login\":\"error\"}");
+      }
+    });
+  }
 });
 
 ///--- SUBMIT ---///
@@ -150,9 +182,10 @@ app.get('/submit',function(req, res) {
 });
 
 app.get('/botchat',function(req, res) {
-  if (!req.session.username || req.session.username == '') {
-    res.send('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title></head><body><pre>Cannot GET /botchat</pre></body></html>');
+  if ((!req.session.username || req.session.username == '') && (req.session.anonymous === 'false')) {
+    res.send('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title></head><body><pre>Cannot GET /botchat1</pre></body></html>');
   } else {
+    console.log('Rendering: ' + req.session.username);
     res.render('botchat', {
       username: req.session.username
     });

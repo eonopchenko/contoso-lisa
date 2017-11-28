@@ -8,6 +8,7 @@ $(document).ready(function() {
             data: {
                 username: $("#id_input_username").val(),
                 password: MD5($("#id_input_password").val()),
+                anonymous: document.getElementById('id_checkbox_anonymous').checked
             },
             contentType: "application/json",
             cache: true,
@@ -29,5 +30,15 @@ $(document).ready(function() {
                 console.log('process error');
             },
         });
+    });
+    
+    $('#id_form_anonymous :checkbox').change(function() {
+        if (this.checked) {
+            document.getElementById("id_input_username").readOnly = true;
+            document.getElementById("id_input_password").readOnly = true;
+        } else {
+            document.getElementById("id_input_username").readOnly = false;
+            document.getElementById("id_input_password").readOnly = false;
+        }
     });
 });
