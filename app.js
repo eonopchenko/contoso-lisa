@@ -77,6 +77,7 @@ app.get('/submit',function(req, res) {
   '"email": "' + req.query.email + '",' + 
   '"tel": "' + req.query.tel + '",' + 
   '"password": "' + req.query.password + '",' + 
+  '"birthdate": "' + req.query.birthdate + '",' + 
   '"balance" : "' + '0' + '"}';
 
   request({

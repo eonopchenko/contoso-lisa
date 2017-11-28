@@ -34,7 +34,8 @@ $(document).ready(function() {
                     lastname: lastname,
                     email: email,
                     tel: tel,
-                    password: MD5(password1)
+                    password: MD5(password1),
+					birthdate: birthdate
                 },
                 contentType: "application/json",
                 cache: true,
