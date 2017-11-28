@@ -4,6 +4,12 @@ const helmet = require("helmet");
 const express_enforces_ssl = require("express-enforces-ssl");
 const app = express();
 const request = require('request');
+const swagger_client = require('swagger-client');
+const request_promise = require('request-promise');
+
+const directLineSecret = 'o9ArxmBKa40.cwA.YoQ.PPlKQ9qrH99zhhtu6uWqWRIUhLrmYDGME2lew3pUwpg';
+const directLineClientName = 'DirectLineClient';
+const directLineSpecUrl = 'https://docs.botframework.com/en-us/restapi/directline3/swagger.json';
 
 app.set('view engine', 'ejs');
 
@@ -27,7 +33,7 @@ app.use(session({
 
 ///--- INDEX PAGE ---///
 app.get('/',function(req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + '/views/home.html');
 });
 
 ///--- REGISTERED LOGIN ---///
@@ -42,15 +48,56 @@ app.get('/login',function(req, res) {
     method: 'GET'
   }, function (error, response, body) {
     var success = false;
-    if(error != null) {
+    if (error) {
       console.log('error:', error);
       console.log('statusCode:', response && response.statusCode);
       console.log('body:', body);
     } else {
       var customers = JSON.parse(body);
-      for(var index in customers) {
-        if((customers[index].username == req.query.username) && (customers[index].password == req.query.password)) {
+      for (var index in customers) {
+        if ((customers[index].username == req.query.username) && (customers[index].password == req.query.password)) {
+
           req.session.username = req.query.username;
+          req.session.password = req.query.password;
+
+          var directLineClient = request_promise(directLineSpecUrl)
+          .then(function (spec) {
+            return new swagger_client({
+              spec: JSON.parse(spec.trim()),
+              usePromise: true
+            });
+          })
+          .then(function (client) {
+            client.clientAuthorizations.add('AuthorizationBotConnector', new swagger_client.ApiKeyAuthorization('Authorization', 'Bearer ' + directLineSecret, 'header'));
+            return client;
+          })
+          .catch(function (error) {
+            console.error('Error initializing DirectLine client', error);
+          });
+        
+          directLineClient.then(function (client) {
+            client.Conversations.Conversations_StartConversation()
+            .then(function (response) {
+              return response.obj.conversationId;
+            })
+            .then(function (conversationId) {
+                client.Conversations.Conversations_PostActivity({
+                  conversationId: conversationId,
+                  activity: {
+                    textFormat: 'plain',
+                    text: '{"username":"' + req.session.username + '","password":"' + req.session.password + '"}',
+                    type: 'message',
+                    from: {
+                      id: directLineClientName,
+                      name: directLineClientName
+                    }
+                  }
+                }).catch(function (error) {
+                  console.error('Error sending message:', error);
+                });
+            });
+          });        
+
           res.contentType('application/json');
           res.send("{\"login\":\"success\"}");
           success = true;
@@ -59,7 +106,7 @@ app.get('/login',function(req, res) {
       }
     }
     
-    if(!success) {
+    if (!success) {
       req.session.username = "";
       res.contentType('application/json');
       res.send("{\"login\":\"error\"}");
@@ -89,7 +136,7 @@ app.get('/submit',function(req, res) {
     body: data,
     method: 'POST'
   }, function (error, response, body) {
-    if(error != null) {
+    if (error) {
       console.log('error:', error);
       console.log('statusCode:', response && response.statusCode);
       console.log('body:', body);
@@ -103,7 +150,7 @@ app.get('/submit',function(req, res) {
 });
 
 app.get('/botchat',function(req, res) {
-  if(!req.session.username || req.session.username == '') {
+  if (!req.session.username || req.session.username == '') {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title></head><body><pre>Cannot GET /botchat</pre></body></html>');
   } else {
     res.render('botchat', {
