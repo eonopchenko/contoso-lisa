@@ -21,7 +21,7 @@ app.enable("trust proxy");
 app.use(express_enforces_ssl());
 
 app.use(session({
-  secret: "123456",
+  secret: "7ffeb7d8-c673-4ead-a134-a18e2c29b7bc",
   resave: true,
   saveUninitialized: true,
   proxy: true,
