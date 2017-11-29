@@ -185,7 +185,6 @@ app.get('/botchat',function(req, res) {
   if ((!req.session.username || req.session.username == '') && (req.session.anonymous === 'false')) {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title></head><body><pre>Cannot GET /botchat1</pre></body></html>');
   } else {
-    console.log('Rendering: ' + req.session.username);
     res.render('botchat', {
       username: req.session.username
     });
