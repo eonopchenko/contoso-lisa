@@ -1,48 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <title>Botchat</title>
-    
-    <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
-      <!-- Custom CSS -->
-      <link href="resources/css/botchat.css" rel="stylesheet">
-</head>
-<body>
-    <h3>Hi, <%= username %>, my name is Lisa. How can I help you?</h3>
 
-    <div id="chat">
-        <img id="id_chat_button_open" class="chat_button" src="resources/img/lisa-icon.png" onclick="openChat()" style="display:none"/>
-        <img id="id_chat_button_close" class="chat_button" src="resources/img/lisa-icon-headset.png" onclick="closeChat()" style="display:block"/>
-        <div id="id_chat_frame" class="embed-responsive embed-responsive-21by9" style="display:block;">
-            <iframe class="embed-responsive-item" src='https://webchat.botframework.com/embed/contoso-lisa-bot?s=4Zxn8PGzGlQ.cwA.rJk.t6C24LEhQELKIJFDrq_EK9972GzH9ZGtnvzM5XJrI-8'></iframe>
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Chatbot - Contoso Bank</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="resources/css/botchat.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-light bg-light static-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">Contoso Bank</a>
+        <a class="btn btn-primary" href="/">Sign In</a>
+      </div>
+    </nav>
+
+    <!-- Masthead -->
+    <header class="masthead text-white text-center">
+      <div class="container">
+            <!-- Basic header, depending on user name -->
+            <div id="id_chat_header">
+                <h3>Hi, <%if (username !== '') { %><%=username%><%} else {%>my name is Lisa<%}%>. How can I help you?</h3>
+            </div>
+            <img id="id_chat_button" class="chat_button" src="resources/img/lisa-icon-headset.png"/>
+            <div id="id_chat_frame" class="embed-responsive embed-responsive-21by9" style="display:block;">
+                <iframe class="embed-responsive-item" src='https://webchat.botframework.com/embed/contoso-lisa-bot?s=4Zxn8PGzGlQ.cwA.rJk.t6C24LEhQELKIJFDrq_EK9972GzH9ZGtnvzM5XJrI-8'></iframe>
+            </div>
+      </div>
+    </header>
+
+    <!-- Footer -->
+    <footer class="footer bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+            <ul class="list-inline mb-2">
+              <li class="list-inline-item">
+                <a href="#">About</a>
+              </li>
+              <li class="list-inline-item">&sdot;</li>
+              <li class="list-inline-item">
+                <a href="#">Contact</a>
+              </li>
+              <li class="list-inline-item">&sdot;</li>
+              <li class="list-inline-item">
+                <a href="#">Terms of Use</a>
+              </li>
+              <li class="list-inline-item">&sdot;</li>
+              <li class="list-inline-item">
+                <a href="#">Privacy Policy</a>
+              </li>
+            </ul>
+            <p class="text-muted small mb-4 mb-lg-0">&copy; Simple Solutions 2017. All Rights Reserved.</p>
+          </div>
+          <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-3">
+                <a href="#">
+                  <i class="fa fa-facebook fa-2x fa-fw"></i>
+                </a>
+              </li>
+              <li class="list-inline-item mr-3">
+                <a href="#">
+                  <i class="fa fa-twitter fa-2x fa-fw"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fa fa-instagram fa-2x fa-fw"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-    </div>
+      </div>
+    </footer>
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Plugin JavaScript -->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="resources/js/botchat.js"></script>
+  </body>
 
-    <script type="text/javascript">
-        function openChat() {
-            document.getElementById("id_chat_button_open").style.display="none";
-            document.getElementById("id_chat_button_close").style.display="block";
-            document.getElementById("id_chat_frame").style.display="block";
-        }
-
-        function closeChat() {
-            document.getElementById("id_chat_button_open").style.display="block";
-            document.getElementById("id_chat_button_close").style.display="none";
-            document.getElementById("id_chat_frame").style.display="none";
-        }
-    </script>
-</body>
 </html>

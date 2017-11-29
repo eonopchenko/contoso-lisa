@@ -11,15 +11,19 @@ const directLineSecret = 'o9ArxmBKa40.cwA.YoQ.PPlKQ9qrH99zhhtu6uWqWRIUhLrmYDGME2
 const directLineClientName = 'DirectLineClient';
 const directLineSpecUrl = 'https://docs.botframework.com/en-us/restapi/directline3/swagger.json';
 
+/// Enable js templates support
 app.set('view engine', 'ejs');
 
+/// Set directory for static resources
 app.use(express.static("views"));
 
-app.use(helmet());
-app.use(helmet.noCache());
-app.enable("trust proxy");
-app.use(express_enforces_ssl());
+// /// Enable secure connection (SSL headers)
+// app.use(helmet());
+// app.use(helmet.noCache());
+// app.enable("trust proxy");
+// app.use(express_enforces_ssl());
 
+/// Initialize express session
 app.use(session({
   secret: "7ffeb7d8-c673-4ead-a134-a18e2c29b7bc",
   resave: true,
@@ -39,12 +43,15 @@ app.get('/',function(req, res) {
 ///--- REGISTERED LOGIN ---///
 app.get('/login',function(req, res) {
 
+  /// Initialize username, password, save anonymous session flag
   req.session.username = '';
   req.session.password = '';
   req.session.anonymous = req.query.anonymous;
 
+  /// Initialize Direct Line Client to establish connection between web and bot backend
   var directLineClient = request_promise(directLineSpecUrl)
   .then(function (spec) {
+    /// Use Swagger to generate client secret
     return new swagger_client({
       spec: JSON.parse(spec.trim()),
       usePromise: true
@@ -58,7 +65,10 @@ app.get('/login',function(req, res) {
     console.error('Error initializing DirectLine client', error);
   });
 
+  /// Anonymous session
   if (req.query.anonymous === 'true') {
+
+    /// Send empty user and password hash to bot
     directLineClient.then(function (client) {
       client.Conversations.Conversations_StartConversation()
       .then(function (response) {
@@ -80,11 +90,15 @@ app.get('/login',function(req, res) {
             console.error('Error sending message:', error);
           });
       });
-    });        
+    });
 
+    /// Return result to the web client
     res.contentType('application/json');
     res.send("{\"login\":\"success\"}");
+
+  /// Registered user session
   } else {
+    /// Check login in database
     request({
       headers: {
         'ZUMO-API-VERSION': '2.0.0',
@@ -101,11 +115,14 @@ app.get('/login',function(req, res) {
       } else {
         var customers = JSON.parse(body);
         for (var index in customers) {
+
+          /// If user exists
           if ((customers[index].username == req.query.username) && (customers[index].password == req.query.password)) {
 
             req.session.username = req.query.username;
             req.session.password = req.query.password;
 
+            /// Send user and password hash to bot
             directLineClient.then(function (client) {
               client.Conversations.Conversations_StartConversation()
               .then(function (response) {
@@ -129,6 +146,7 @@ app.get('/login',function(req, res) {
               });
             });        
 
+            /// Return result to the web client
             res.contentType('application/json');
             res.send("{\"login\":\"success\"}");
             success = true;
@@ -136,7 +154,8 @@ app.get('/login',function(req, res) {
           }
         }
       }
-      
+
+      /// Return result to the web client
       if (!success) {
         req.session.username = "";
         res.contentType('application/json');
@@ -149,6 +168,7 @@ app.get('/login',function(req, res) {
 ///--- SUBMIT ---///
 app.get('/submit',function(req, res) {
 
+  /// Form table structure
   var data = '{' + 
   '"username": "' + req.query.username + '",' + 
   '"firstname": "' + req.query.firstname + '",' + 
@@ -159,6 +179,7 @@ app.get('/submit',function(req, res) {
   '"birthdate": "' + req.query.birthdate + '",' + 
   '"balance" : "' + '0' + '"}';
 
+  /// Start post request
   request({
     headers: {
       'ZUMO-API-VERSION': '2.0.0',
@@ -172,9 +193,13 @@ app.get('/submit',function(req, res) {
       console.log('error:', error);
       console.log('statusCode:', response && response.statusCode);
       console.log('body:', body);
+
+      /// Return result to the web client
       res.contentType('application/json');
       res.send("{\"submit\":\"error\"}");
     } else {
+
+      /// Return result to the web client
       res.contentType('application/json');
       res.send("{\"submit\":\"success\"}");
     }
@@ -182,6 +207,7 @@ app.get('/submit',function(req, res) {
 });
 
 app.get('/botchat',function(req, res) {
+  /// Protect bot page from direct access
   if ((!req.session.username || req.session.username == '') && (req.session.anonymous === 'false')) {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title></head><body><pre>Cannot GET /botchat1</pre></body></html>');
   } else {
@@ -191,6 +217,7 @@ app.get('/botchat',function(req, res) {
   }
 });
 
+/// Run web-server
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
   console.log("Listening on http://localhost:" + port);
